@@ -13,12 +13,10 @@ Generate an endless stream of made up language for the computer to speak.
 const consonants = "bcdfghjklmnprstvwxyz".split('');
 const vowels = "aeiou".split('');
 
-let nonsense = ``;
+let nonsense = `Click to start the nonsense.`;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-
-  sayNonsense();
 }
 
 function draw() {

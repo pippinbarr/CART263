@@ -147,18 +147,24 @@ const animals = [
   "zebra"
 ];
 
-let validCharacters = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz `;
-
-let currentAnimal;
-
 let currentAnswer = ``;
+let currentAnimal = ``;
+
 
 // setup()
 // Description of setup
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  textSize(64);
+  if (annyang) {
+    let commands = {
+      'I think it is *animal': guessAnimal
+    };
+    annyang.addCommands(commands);
+    annyang.start();
+  }
+
+  textSize(102);
   textStyle(BOLD);
   textAlign(CENTER);
 
@@ -172,6 +178,12 @@ function setup() {
 function draw() {
   background(255);
 
+  if (currentAnswer === currentAnimal) {
+    fill(0, 255, 0);
+  }
+  else {
+    fill(255, 0, 0);
+  }
   text(currentAnswer, width / 2, height / 2);
 }
 
@@ -187,22 +199,15 @@ function reverseString(string) {
   return result;
 }
 
-function keyTyped() {
-  if (validCharacters.indexOf(key) !== -1) {
-    currentAnswer += key;
-  }
+function guessAnimal(animal) {
+  currentAnswer = animal.toLowerCase();
+  annyang.pause();
+  setTimeout(nextQuestion, 2000);
 }
 
-function keyPressed() {
-  if (keyCode === ENTER) {
-    if (currentAnswer.toLowerCase() === currentAnimal) {
-      currentAnimal = random(animals);
-    }
-
-    currentAnswer = ``;
-    sayCurrentAnimal();
-  }
-  // else if (keyCode === BACKSPACE) {
-  //   currentAnswer = currentAnswer.slice(0, currentAnswer.length - 1);
-  // }
+function nextQuestion() {
+  currentAnswer = ``;
+  currentAnimal = random(animals);
+  sayCurrentAnimal();
+  annyang.resume();
 }
