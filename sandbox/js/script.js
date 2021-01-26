@@ -1,39 +1,20 @@
-let jokeText = ``; // The current joke.
-let jokeDataObject = undefined; // To store the object version of the joke data
-let jokeData = []; // The loaded joke data
+"use strict";
 
-function preload() {
-  // Load the jokes array (as an object)
-  jokeDataObject = loadJSON(`https://official-joke-api.appspot.com/jokes/programming/random`);
-}
+const NUM_CATS = 20000;
+
+let animal;
+let cat;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  // Get the full list of property names in the joke data object
-  let jokeKeys = Object.keys(jokeDataObject);
-  // Go through the keys and populate the actual data array with the associated values
-  for (let i = 0; i < jokeKeys.length; i++) {
-    let key = jokeKeys[i];
-    let element = jokeDataObject[key];
-    jokeData.push(element);
-  }
-
-  // We get the joke object as the first element of the array
-  let joke = jokeData[0];
-  // Set the joke text as the setup and punchline properties together
-  jokeText = `${joke.setup}\n\n${joke.punchline}`;
+  animal = new Animal(500, 500);
+  cat = new Cat(600, 500);
 }
 
 function draw() {
-  background(0);
+  background(255, 255, 0);
 
-  // Display the current joke
-  push();
-  fill(255, 255, 0);
-  textSize(32);
-  textAlign(CENTER, CENTER);
-  rectMode(CENTER);
-  text(jokeText, width / 2, height / 2, width / 2, height / 2);
-  pop();
+  animal.update();
+  cat.update();
 }
