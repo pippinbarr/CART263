@@ -15,6 +15,7 @@ function setup() {
 
   video = createCapture(VIDEO);
   video.size(width, height);
+  // Hide the video element, and just show the canvas
   video.hide();
 
 
