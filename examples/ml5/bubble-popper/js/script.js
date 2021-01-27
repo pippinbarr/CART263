@@ -67,36 +67,57 @@ function play() {
     const [indexTipX, indexTipY] = predictions[0].annotations.indexFinger[3];
     const [indexBaseX, indexBaseY] = predictions[0].annotations.indexFinger[0];
 
-
     // Check popping
     let d = dist(indexTipX, indexTipY, bubble.x, bubble.y);
     if (d < bubble.size / 2) {
       // Pop!
-      bubble.x = random(width);
-      bubble.y = height;
+      resetBubble();
     }
 
-    // Draw pin
-    push();
-    stroke(255);
-    strokeWeight(2);
-    line(indexTipX, indexTipY, indexBaseX, indexBaseY);
-
-    fill(255, 0, 0);
-    noStroke();
-    ellipse(indexBaseX, indexBaseY, 20);
-    pop();
+    displayPin(indexTipX, indexTipY, indexBaseX, indexBaseY);
   }
 
+  moveBubble();
+  checkOutOfBounds();
+  displayBubble();
+}
+
+function moveBubble() {
   // Move bubble
   bubble.x += bubble.vx;
   bubble.y += bubble.vy;
+}
 
+function checkOutOfBounds() {
+  if (bubble < 0) {
+    resetBubble();
+  }
+}
+
+function resetBubble() {
+  bubble.x = random(width);
+  bubble.y = height;
+}
+
+function displayBubble() {
   // Draw bubble
   push();
   noStroke();
   fill(100, 100, 200, 150);
   ellipse(bubble.x, bubble.y, bubble.size);
+  pop();
+}
+
+function displayPin(tipX, tipY, baseX, baseY) {
+  // Draw pin
+  push();
+  stroke(255);
+  strokeWeight(2);
+  line(tipX, tipY, baseX, baseY);
+
+  fill(255, 0, 0);
+  noStroke();
+  ellipse(baseX, baseY, 20);
   pop();
 }
 
