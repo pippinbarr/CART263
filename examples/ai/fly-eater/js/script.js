@@ -105,7 +105,6 @@ function simulation() {
 
   // Update the current mouth data with the predictions from Facemesh
   mouth.update(predictions);
-  mouth.display();
 
   // Go through all the flies (backwards so we can remove them as needed)
   for (let i = flies.length - 1; i >= 0; i--) {
