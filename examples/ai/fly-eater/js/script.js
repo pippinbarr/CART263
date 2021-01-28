@@ -5,7 +5,7 @@
 Fly Eater
 Pippin Barr
 
-A program that allows you to eat virtual flies via the webcame. Displays
+A program that allows you to eat virtual flies via the webcam. Displays
 you on screen and uses ml5's implementation of Facemesh to detect your mouth
 and whether it's open or closed. Close your mouth while a fly is "in" it to
 eat the fly. Yum yum.
@@ -88,6 +88,8 @@ function draw() {
 Displays a simple loading screen with the loading model's name
 */
 function loading() {
+  background(255);
+
   push();
   textSize(32);
   textStyle(BOLD);

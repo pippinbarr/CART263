@@ -1,3 +1,12 @@
+/**
+
+The object list that CocoSsd actually recognizes put into an array so we can
+randomly choose one.
+
+Scraped from: https://github.com/tensorflow/tfjs-models/blob/master/coco-ssd/src/classes.ts
+
+*/
+
 const cocossdObjects = [
   'person',
   'bicycle',
