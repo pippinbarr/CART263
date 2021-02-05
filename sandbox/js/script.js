@@ -1,117 +1,182 @@
 "use strict";
 
-let state = `loading`; // play
-let video;
-let handpose;
-let modelName = `Handpose`
-let predictions = [];
+//counter
+let wincounter = 0;
+let losecounter = 0;
 
-let bubble;
+//choices for robot to pick from
+const choices = [
+  "rock",
+  "paper",
+  "scissors",
+];
+// responses to user's irregular answer
+const cheatresponses = [
+  "Stop trying to cheat you lil bastard",
+  "You dare cross me, human?",
+  "Are you ducking with me?",
+  "If you don't stop cheating I am going to crawl out of the sewer grate in your basement",
+  "How dare you challenge me, mere mortal?",
+  "Don't make me hunt you down over a game of rock paper scissors",
+  "Here's ...... someone. much. worse. than Johnny",
+  "Respect the rules... or... I'm coming for you...",
+];
+
+let currentChoice = ``;
+let currentAnswer = ``;
+let currentCheatResponse = ``;
+
+let state = `menu`; // menu, start, win, lose, tie, cheat
+
+//image
+let robotImage;
+
+function preload() {
+  robotImage = loadImage(`assets/images/clown.png`)
+}
 
 function setup() {
-  createCanvas(640, 480);
+  createCanvas(windowWidth, windowHeight);
 
-  video = createCapture(VIDEO);
-  video.size(width, height);
-  video.hide();
-
-  handpose = ml5.handpose(video, {
-    flipHorizontal: true
-  }, modelReady);
-  handpose.on("predict", gotResults);
-
-  bubble = {
-    x: random(width),
-    y: height,
-    size: 100,
-    vx: 0,
-    vy: -2
+  if (annyang) {
+    let commands = {
+      'Go *choice': playRandom
+    };
+    annyang.addCommands(commands);
+    annyang.start();
   }
 }
 
-function gotResults(results) {
-  predictions = results;
-}
-
-function modelReady() {
-  console.log(`${modelName} model is ready!`);
-  state = `play`;
-}
 
 function draw() {
-  if (state === `loading`) {
-    loading();
-  }
-  else if (state === `play`) {
-    play();
-  }
-}
-
-function loading() {
-  push();
-  textSize(32);
-  textStyle(BOLD);
-  textAlign(CENTER, CENTER);
-  text(`Waiting for ${modelName}...`, width / 2, height / 2);
-  pop();
-}
-
-function play() {
-  // const flippedVideo = ml5.flipImage(video);
-  // image(flippedVideo, 0, 0, width, height);
   background(0);
 
-  // debug();
+  display()
+  counterdisplay();
+}
 
-  if (predictions.length > 0) {
-    const [indexTipX, indexTipY] = predictions[0].annotations.indexFinger[3];
-    const [indexBaseX, indexBaseY] = predictions[0].annotations.indexFinger[0];
+function display() {
+  textSize(32);
+  //                HIDE TEXT BEGINNING
+  if (state === `menu`) {
+    menu()
+  }
+  else if (state === `start`) {
 
-
-    // Check popping
-    let d = dist(indexTipX, indexTipY, bubble.x, bubble.y);
-    if (d < bubble.size / 2) {
-      // Pop!
-      bubble.x = random(width);
-      bubble.y = height;
-    }
-
-    // Draw pin
+    return;
+  }
+  //                  TIE
+  else if (state === `tie`) {
     push();
-    stroke(255);
-    strokeWeight(2);
-    line(indexTipX, indexTipY, indexBaseX, indexBaseY);
-
+    textSize(90);
+    text('TIE', width / 2, height / 2)
+    pop();
+    fill(140);
+  }
+  //                  WON
+  else if (state === `win`) {
+    push();
+    textSize(90);
+    text('You Won', width / 2, height / 2);
+    pop();
+    fill(0, 255, 0);
+  }
+  //                    LOST
+  else if (state === `lose`) {
+    push();
+    textSize(90);
+    text('You Lost', width / 2, height / 2);
+    pop();
     fill(255, 0, 0);
-    noStroke();
-    ellipse(indexBaseX, indexBaseY, 20);
+  }
+  //                    CHEAT
+  else if (state === `cheat`) {
+    fill(240);
+    textSize(26);
+    background(165, 21, 3);
+    image(robotImage, width / 5 - 50, 0, );
+    push();
+    textStyle(BOLD);
+    textSize(80);
+    text('CHEATING DETECTED.', 1 * width / 5, height / 2)
     pop();
   }
 
-  // Move bubble
-  bubble.x += bubble.vx;
-  bubble.y += bubble.vy;
-
-  // Draw bubble
-  push();
-  noStroke();
-  fill(100, 100, 200, 150);
-  ellipse(bubble.x, bubble.y, bubble.size);
-  pop();
+  text('Your Pick:', width / 5, height / 3);
+  text('Their Pick:', width / 5, 2 * height / 3);
+  text(currentAnswer, width / 3, height / 3)
+  text(currentChoice, width / 3, 2 * height / 3)
 }
 
-function debug() {
-  if (predictions.length > 0) {
-    const landmarks = predictions[0].landmarks;
+function counterdisplay() {
+  text('Win:' + wincounter, width / 4, 100);
+  text('Loss:' + losecounter, 3 * width / 4, 100);
+}
 
-    for (let i = 0; i < landmarks.length; i++) {
-      push();
-      textSize(18);
-      textStyle(BOLD);
-      fill(255, 0, 0, 100);
-      textAlign(CENTER, CENTER);
-      text(i, landmarks[i][0], landmarks[i][1]);
-      pop();
+function playRandom(choice) {
+
+  currentAnswer = choice.toLowerCase();
+  console.log(currentAnswer);
+
+  // IF RIGHT ANSWER
+  if (currentAnswer === 'rock' || currentAnswer === 'scissors' || currentAnswer === 'paper') {
+    // Robot plays
+    currentChoice = random(choices);
+    responsiveVoice.speak(currentChoice, "US English Male", {
+      pitch: 1,
+      rate: 1,
+      volume: 1,
+    });
+    // Check result!
+    if (currentAnswer === currentChoice) {
+      state = `tie`;
+    }
+    else if (currentChoice === 'scissors' && currentAnswer === 'rock' ||
+      currentChoice === 'rock' && currentAnswer === 'paper' ||
+      currentChoice === 'paper' && currentAnswer === 'scissors') {
+      wincounter++;
+      state = `win`;
+    }
+    else if (currentChoice === 'rock' && currentAnswer === 'scissors' ||
+      currentChoice === 'paper' && currentAnswer === 'rock' ||
+      currentChoice === 'scissors' && currentAnswer === 'paper') {
+      losecounter++;
+      state = `lose`;
     }
   }
+  // IF CHEAT
+  else {
+    state = `cheat`;
+    currentChoice = random(cheatresponses);
+    responsiveVoice.speak(currentChoice, "UK English Male", {
+      pitch: 0.7,
+      rate: 0.7,
+      volume: 6,
+    });
+  }
+
 }
+
+function mousePressed() {
+  if (state === `menu`) {
+    state = `start`;
+  }
+}
+
+
+
+// else if (currentChoice === 'scissors' && currentAnswer === 'rock' ||
+//   currentChoice === 'rock' && currentAnswer === 'paper' ||
+//   currentChoice === 'paper' && currentAnswer === 'scissors') {
+//   wincounter++;
+//
+//   push();
+//   textSize(90);
+//   text('You Won', width / 2, height / 2);
+//   pop();
+//   fill(0, 255, 0);
+// }
+// //                    LOST
+// else if (currentChoice === 'rock' && currentAnswer === 'scissors' ||
+//   currentChoice === 'paper' && currentAnswer === 'rock' ||
+//   currentChoice === 'scissors' && currentAnswer === 'paper') {
