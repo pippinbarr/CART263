@@ -1,0 +1,59 @@
+/*********************************************
+
+Here is a description of any special CSS used.
+In this case it's just padding and margin to 0
+and then centring the canvas (and anything else)
+using the CSS Grid.
+
+Also hides overflow.
+
+**********************************************/
+
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+
+  font-family: Helvetica, sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+#container {
+  display: grid;
+  grid-template-columns: 50vw 50vw;
+}
+
+#left-div {
+  overflow: scroll;
+  width: 40vw;
+  height: 100vh;
+  color: pink;
+  margin: auto;
+
+  /* overflow: auto; */
+    -ms-overflow-style: none; /* IE 11 */
+    scrollbar-width: none; /* Firefox 64 */
+}
+
+#right-div {
+  overflow: scroll;
+  width: 40vw;
+  height: 100vh;
+  color: grey;
+  margin: auto;
+
+  /* overflow: auto; */
+    -ms-overflow-style: none; /* IE 11 */
+    scrollbar-width: none; /* Firefox 64 */
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.example {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

@@ -1,0 +1,17 @@
+let mainHeading = document.getElementById(`main-heading`);
+let paragraph = document.getElementById(`paragraph`);
+
+requestAnimationFrame(fadeOut);
+
+function fadeOut() {
+  // Reduce the opacity
+  opacity -= 0.01;
+  // Set the opacity on the paragraph
+  paragraph.style[`opacity`] = opacity;
+  // Check if the opacity is still above 0
+  if (opacity > 0) {
+    // If it is, call fadeOut() again on the next frame
+    // So we get an animation over time!
+    requestAnimationFrame(fadeOut);
+  }
+}

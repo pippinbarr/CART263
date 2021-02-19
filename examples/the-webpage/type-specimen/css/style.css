@@ -1,0 +1,16 @@
+#interface {
+
+}
+
+#display {
+  margin-top: 1rem;
+}
+
+#specimen {
+  font-family: Helvetica, sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.critter-part {
+}
