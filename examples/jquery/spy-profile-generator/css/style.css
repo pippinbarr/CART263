@@ -1,0 +1,11 @@
+body {
+  font-family: monospace;
+}
+
+#new-user {
+  display: none;
+}
+
+#profile {
+  display: none;
+}
